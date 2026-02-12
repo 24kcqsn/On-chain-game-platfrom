@@ -1,0 +1,34 @@
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+import '@rainbow-me/rainbowkit/styles.css';
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import { http } from 'wagmi';
+import { sepolia } from 'wagmi/chains';
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+
+
+const config = getDefaultConfig({
+  appName: 'My Lottery App',
+  projectId: 'YOUR_PROJECT_ID', 
+  chains: [sepolia],
+  transports: {
+    [sepolia.id]: http('https://ethereum-sepolia-rpc.publicnode.com'),
+  },
+  ssr: true, 
+});
+
+
+const queryClient = new QueryClient();
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider>
+          <Component {...pageProps} />
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}
